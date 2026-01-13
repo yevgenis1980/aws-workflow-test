@@ -1,6 +1,4 @@
-# -----------------------------
-# VARIABLES
-# -----------------------------
+
 variable "db_password" {
   description = "MySQL root password"
   type        = string
