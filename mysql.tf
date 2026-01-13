@@ -31,7 +31,7 @@ resource "aws_db_subnet_group" "main" {
 #     RDS MySQL INSTANCE
 # -----------------------------
 resource "aws_db_instance" "wordpress" {
-  allocated_storage    = 20
+  allocated_storage    = 10
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t3.micro"
