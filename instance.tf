@@ -2,7 +2,7 @@
 #      EC2 INSTANCES GROUP
 # -----------------------------
 resource "aws_key_pair" "ubuntu" {
-  depends_on = [aws_efs_file_system.efs]
+  depends_on = [aws_efs_file_system.wordpress]
   key_name   = "ubuntu"
   public_key = file("~/.ssh/id_rsa.pub") # replace with your actual public key path
 }
