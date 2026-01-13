@@ -36,7 +36,6 @@ chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
 
 # Configure wp-config.php
-cat > /var/www/html/wp-config.php <<EOC
 <?php
 define('DB_NAME', '${var.db_name}');
 define('DB_USER', '${var.db_username}');
@@ -46,11 +45,10 @@ define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 \$table_prefix = 'wp_';
 define('WP_DEBUG', false);
-if ( !defined('ABSPATH') )
+if (!defined('ABSPATH'))
     define('ABSPATH', dirname(__FILE__) . '/');
 require_once(ABSPATH . 'wp-settings.php');
 EOC
-
 systemctl restart apache2
 EOF
   )
