@@ -1,5 +1,5 @@
 # -----------------------------
-# EC2 INSTANCES FOR SCALING
+#      EC2 INSTANCES GROUP
 # -----------------------------
 resource "aws_key_pair" "ubuntu" {
   depends_on = [aws_nat_gateway.nat]
@@ -74,6 +74,9 @@ EOF
   }
 }
 
+# -----------------------------
+#       EC2 AUTOSCALING
+# -----------------------------
 resource "aws_autoscaling_group" "asg" {
   depends_on = [aws_launch_template.asg_lt]
   name             = "app-asg"
