@@ -2,7 +2,7 @@
 # EFS for wp-content
 # -----------------------------
 resource "aws_efs_file_system" "wordpress" {
-  depends_on = [aws_launch_template.asg_lt]
+  #depends_on = [aws_launch_template.asg_lt]
   creation_token   = "wordpress-efs"
   performance_mode = "generalPurpose"
   encrypted        = true
@@ -19,7 +19,6 @@ resource "aws_efs_mount_target" "wordpress" {
   security_groups = [aws_security_group.asg_sg.id]
 
   depends_on = [
-    aws_efs_file_system.wordpress,
-    aws_security_group.efs_sg
+    aws_efs_file_system.wordpress
   ]
 }
