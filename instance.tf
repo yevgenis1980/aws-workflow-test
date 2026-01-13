@@ -17,32 +17,29 @@ resource "aws_launch_template" "asg_lt" {
 
   user_data = base64encode(<<EOF
 #!/bin/bash
-# Update and install packages
 apt update -y
 apt install -y apache2 php php-mysql wget unzip curl
-
-# Start Apache
 systemctl enable apache2
 systemctl start apache2
 
-# Download and setup WordPress
+# Download WordPress
 cd /var/www/html
 wget https://wordpress.org/latest.zip
 unzip latest.zip
 mv wordpress/* .
 rm -rf wordpress latest.zip
 
-# Set permissions
+# Permissions
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
 
-# Create wp-config.php with sample database connection
+# Configure wp-config.php
 cat > /var/www/html/wp-config.php <<EOC
 <?php
-define('DB_NAME', 'wordpress_db');      // replace with your DB name
-define('DB_USER', 'wordpress_user');    // replace with your DB user
-define('DB_PASSWORD', 'SuperSecret123');# replace with your DB password
-define('DB_HOST', 'your-rds-endpoint'); # replace with RDS endpoint
+define('DB_NAME', '${var.db_name}');
+define('DB_USER', '${var.db_username}');
+define('DB_PASSWORD', '${var.db_password}');
+define('DB_HOST', '${aws_db_instance.wordpress.address}');
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
 \$table_prefix = 'wp_';
@@ -51,7 +48,7 @@ if ( !defined('ABSPATH') )
     define('ABSPATH', dirname(__FILE__) . '/');
 require_once(ABSPATH . 'wp-settings.php');
 EOC
-# Restart Apache to apply changes
+
 systemctl restart apache2
 EOF
   )
