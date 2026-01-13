@@ -1,6 +1,4 @@
-# ----------------------
-# VPC Outputs
-# ----------------------
+
 output "vpc_id" {
   description = "ID of the main VPC"
   value       = aws_vpc.main.id
@@ -16,9 +14,6 @@ output "private_subnet_ids" {
   value       = [for s in aws_subnet.private : s.id]
 }
 
-# ----------------------
-# Internet Gateway / NAT Outputs
-# ----------------------
 output "internet_gateway_id" {
   description = "ID of the Internet Gateway"
   value       = aws_internet_gateway.igw.id
@@ -29,11 +24,12 @@ output "nat_gateway_id" {
   value       = aws_nat_gateway.nat.id
 }
 
-# ----------------------
-# Auto Scaling Group
-# ----------------------
 output "asg_name" {
   description = "Auto Scaling Group name"
   value       = aws_autoscaling_group.asg.name
 }
 
+output "alb_dns_name" {
+  description = "The DNS name of the Application Load Balancer"
+  value       = aws_lb.app_alb.dns_name
+}
