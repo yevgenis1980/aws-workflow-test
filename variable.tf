@@ -14,5 +14,5 @@ variable "db_username" {
 variable "db_name" {
   description = "WordPress database name"
   type        = string
-  default     = "wordpress_db"
+  default     = "wordpress"
 }
