@@ -14,6 +14,7 @@ resource "aws_lb" "app_alb" {
    depends_on = [aws_autoscaling_group.asg]
 }
 
+
 resource "aws_lb_target_group" "app_tg" {
   name     = "app-tg"
   port     = 80
@@ -36,6 +37,7 @@ resource "aws_lb_target_group" "app_tg" {
   depends_on = [aws_autoscaling_group.asg]
 }
 
+
 resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.app_alb.arn
   port              = "80"
@@ -47,6 +49,7 @@ resource "aws_lb_listener" "http_listener" {
   }
   depends_on = [aws_autoscaling_group.asg]
 }
+
 
 resource "aws_autoscaling_attachment" "asg_alb_attachment" {
   autoscaling_group_name = aws_autoscaling_group.asg.name
