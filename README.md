@@ -1,7 +1,7 @@
 <img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/1b481bf3-c2c5-4b6c-a10f-f80eb2c195f2" />
 
 
-## AWS | EC2 Autoscaling
+## AWS | Web Autoscaling
 Architecture with public and private subnets, an Application Load Balancer (ALB), EC2 instances, and private resources. It demonstrates how users interact with the system, and how scaling and secure resource access are managed.
 
 
