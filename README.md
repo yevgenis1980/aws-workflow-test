@@ -1,4 +1,4 @@
-<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/1b481bf3-c2c5-4b6c-a10f-f80eb2c195f2" />
+<img width="1536" height="1024" alt="image" src="https://github.com/user-attachments/assets/117a4ad9-d0a1-4c0c-aa4b-6345045a2232" />
 
 
 ## AWS | Web Autoscaling
