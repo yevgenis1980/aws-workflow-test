@@ -1,6 +1,6 @@
 
 # -----------------------------
-# Security group for RDS
+#   Security group for RDS
 # -----------------------------
 resource "aws_security_group" "rds_sg" {
   name        = "rds-sg"
@@ -22,8 +22,13 @@ resource "aws_security_group" "rds_sg" {
   }
 }
 
+resource "aws_db_subnet_group" "main" {
+  name       = "rds-subnet-group"
+  subnet_ids = aws_subnet.private[*].id
+}
+
 # -----------------------------
-# RDS MySQL
+#     RDS MySQL INSTANCE
 # -----------------------------
 resource "aws_db_instance" "wordpress" {
   allocated_storage    = 20
@@ -37,11 +42,6 @@ resource "aws_db_instance" "wordpress" {
   vpc_security_group_ids = [aws_security_group.rds_sg.id]
   db_subnet_group_name   = aws_db_subnet_group.main.name
   skip_final_snapshot   = true
+
+  depends_on = [aws_nat_gateway.nat]
 }
-
-resource "aws_db_subnet_group" "main" {
-  name       = "rds-subnet-group"
-  subnet_ids = aws_subnet.private[*].id
-}
-
-
