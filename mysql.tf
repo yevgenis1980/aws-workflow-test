@@ -1,5 +1,7 @@
 
+# -----------------------------
 # Security group for RDS
+# -----------------------------
 resource "aws_security_group" "rds_sg" {
   name        = "rds-sg"
   description = "Allow ASG instances to connect to MySQL"
