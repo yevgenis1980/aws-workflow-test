@@ -20,7 +20,7 @@ resource "aws_launch_template" "asg_lt" {
   user_data = base64encode(<<EOF
 #!/bin/bash
 apt update -y
-apt install -y apache2 php php-mysql wget unzip curl
+apt install -y apache2 php php-mysql wget unzip curl nfs-common
 systemctl enable apache2
 systemctl start apache2
 
@@ -31,11 +31,17 @@ unzip latest.zip
 mv wordpress/* .
 rm -rf wordpress latest.zip
 
+# Mount EFS for wp-content
+mkdir -p /var/www/html/wp-content
+mount -t nfs4 -o nfsvers=4.1 ${aws_efs_file_system.wordpress.dns_name}:/ /var/www/html/wp-content
+echo "${aws_efs_file_system.wordpress.dns_name}:/ /var/www/html/wp-content nfs4 defaults,_netdev 0 0" >> /etc/fstab
+
 # Permissions
 chown -R www-data:www-data /var/www/html
 chmod -R 755 /var/www/html
 
 # Configure wp-config.php
+cat > /var/www/html/wp-config.php <<EOC
 <?php
 define('DB_NAME', '${var.db_name}');
 define('DB_USER', '${var.db_username}');
@@ -49,6 +55,7 @@ if (!defined('ABSPATH'))
     define('ABSPATH', dirname(__FILE__) . '/');
 require_once(ABSPATH . 'wp-settings.php');
 EOC
+
 systemctl restart apache2
 EOF
   )
