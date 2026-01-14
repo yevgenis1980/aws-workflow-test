@@ -1,48 +1,47 @@
-
 -- ============================================================================
--- PostgreSQL Schema for Facebook JSON ETL
+-- MySQL Schema for Facebook JSON ETL
 -- ============================================================================
 -- This file contains the database schema required for the Lambda function.
--- Run these statements in your PostgreSQL database before deploying the Lambda.
+-- Run these statements in your MySQL database before deploying the Lambda.
 -- ============================================================================
 
 -- Drop tables if they exist (for clean setup)
 -- WARNING: This will delete all existing data
--- DROP TABLE IF EXISTS comments CASCADE;
--- DROP TABLE IF EXISTS posts CASCADE;
+-- DROP TABLE IF EXISTS comments;
+-- DROP TABLE IF EXISTS posts;
 
 -- Create posts table
 CREATE TABLE IF NOT EXISTS posts (
     post_id VARCHAR(255) PRIMARY KEY,
-    timestamp TIMESTAMP,
+    timestamp DATETIME,
     title TEXT,
     post_texts TEXT,
-    text_length INTEGER,
+    text_length INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
 
 -- Create comments table
 CREATE TABLE IF NOT EXISTS comments (
     comment_id VARCHAR(255) PRIMARY KEY,
     post_id VARCHAR(255) NOT NULL,
-    timestamp TIMESTAMP,
+    timestamp DATETIME,
     author VARCHAR(255),
     comment_texts TEXT,
-    text_length INTEGER,
+    text_length INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     CONSTRAINT fk_post
         FOREIGN KEY (post_id)
         REFERENCES posts(post_id)
         ON DELETE CASCADE
-);
+) ENGINE=InnoDB;
 
 -- Create indexes for better query performance
-CREATE INDEX IF NOT EXISTS idx_posts_timestamp ON posts(timestamp);
-CREATE INDEX IF NOT EXISTS idx_comments_post_id ON comments(post_id);
-CREATE INDEX IF NOT EXISTS idx_comments_timestamp ON comments(timestamp);
-CREATE INDEX IF NOT EXISTS idx_comments_author ON comments(author);
+CREATE INDEX idx_posts_timestamp ON posts(timestamp);
+CREATE INDEX idx_comments_post_id ON comments(post_id);
+CREATE INDEX idx_comments_timestamp ON comments(timestamp);
+CREATE INDEX idx_comments_author ON comments(author);
 
 -- ============================================================================
 -- Example UPSERT Queries (used by the Lambda function)
@@ -51,24 +50,22 @@ CREATE INDEX IF NOT EXISTS idx_comments_author ON comments(author);
 -- Posts UPSERT (Insert or Update on conflict)
 -- INSERT INTO posts (post_id, timestamp, title, post_texts, text_length)
 -- VALUES ('post_001', '2024-11-18 09:42:13', 'Test Post', 'This is a test', 14)
--- ON CONFLICT (post_id)
--- DO UPDATE SET
---     timestamp = EXCLUDED.timestamp,
---     title = EXCLUDED.title,
---     post_texts = EXCLUDED.post_texts,
---     text_length = EXCLUDED.text_length,
+-- ON DUPLICATE KEY UPDATE
+--     timestamp = VALUES(timestamp),
+--     title = VALUES(title),
+--     post_texts = VALUES(post_texts),
+--     text_length = VALUES(text_length),
 --     updated_at = CURRENT_TIMESTAMP;
 
 -- Comments UPSERT (Insert or Update on conflict)
 -- INSERT INTO comments (comment_id, post_id, timestamp, author, comment_texts, text_length)
 -- VALUES ('comment_001', 'post_001', '2024-11-18 10:05:47', 'John Doe', 'Great post!', 11)
--- ON CONFLICT (comment_id)
--- DO UPDATE SET
---     post_id = EXCLUDED.post_id,
---     timestamp = EXCLUDED.timestamp,
---     author = EXCLUDED.author,
---     comment_texts = EXCLUDED.comment_texts,
---     text_length = EXCLUDED.text_length,
+-- ON DUPLICATE KEY UPDATE
+--     post_id = VALUES(post_id),
+--     timestamp = VALUES(timestamp),
+--     author = VALUES(author),
+--     comment_texts = VALUES(comment_texts),
+--     text_length = VALUES(text_length),
 --     updated_at = CURRENT_TIMESTAMP;
 
 -- ============================================================================
@@ -76,8 +73,8 @@ CREATE INDEX IF NOT EXISTS idx_comments_author ON comments(author);
 -- ============================================================================
 
 -- Check table structure
--- \d posts
--- \d comments
+-- DESCRIBE posts;
+-- DESCRIBE comments;
 
 -- Count records
 -- SELECT COUNT(*) FROM posts;
