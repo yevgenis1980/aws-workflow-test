@@ -26,6 +26,7 @@ systemctl start apache2
 
 # Download WordPress
 cd /var/www/html
+rm -rf index.html  # Test
 wget https://wordpress.org/latest.zip
 unzip latest.zip
 mv wordpress/* .
