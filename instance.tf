@@ -26,6 +26,7 @@ systemctl enable apache2
 systemctl start apache2
 
 # Wait for EFS and mount wp-content
+rm -rf  /var/www/html/*
 mkdir -p /var/www/html/wp-content
 until mount -t nfs4 -o nfsvers=4.1 ${aws_efs_file_system.wordpress.dns_name}:/ /var/www/html/wp-content; do
   echo "Waiting for EFS..."
