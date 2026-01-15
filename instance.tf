@@ -25,23 +25,18 @@ apt install -y apache2 php php-mysql wget unzip curl nfs-common
 systemctl enable apache2
 systemctl start apache2
 
-# Wait for EFS and mount wp-content
-rm -rf  /var/www/html/index.html || true
-mkdir -p /var/www/html/wp-content
-until mount -t nfs4 -o nfsvers=4.1 ${aws_efs_file_system.wordpress.dns_name}:/ /var/www/html/wp-content; do
-  echo "Waiting for EFS..."
-  sleep 5
-done
-echo "${aws_efs_file_system.wordpress.dns_name}:/ /var/www/html/wp-content nfs4 defaults,_netdev 0 0" >> /etc/fstab
+# Download WordPress
+cd /var/www/html
+rm -rf *.html # Test
+wget https://wordpress.org/latest.zip
+unzip latest.zip
+mv wordpress/* .
+rm -rf wordpress latest.zip
 
-# Download WordPress only if wp-config.php does not exist
-if [ ! -f /var/www/html/wp-config.php ]; then
-  cd /tmp
-  wget https://wordpress.org/latest.zip
-  unzip latest.zip
-  cp -r wordpress/* /var/www/html/
-  rm -rf wordpress latest.zip
-fi
+# Mount EFS for wp-content
+mkdir -p /var/www/html/wp-content
+mount -t nfs4 -o nfsvers=4.1 ${aws_efs_file_system.wordpress.dns_name}:/ /var/www/html/wp-content
+echo "${aws_efs_file_system.wordpress.dns_name}:/ /var/www/html/wp-content nfs4 defaults,_netdev 0 0" >> /etc/fstab
 
 # Permissions
 chown -R www-data:www-data /var/www/html
